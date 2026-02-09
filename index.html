@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anime Sport Q&A</title>
+  <style>
+    * { box-sizing: border-box; }body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #0a0f2c, #1b2a4e, #ff2f92);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  padding: 16px;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  margin-bottom: 14px;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+textarea {
+  width: 100%;
+  min-height: 90px;
+  border-radius: 14px;
+  border: none;
+  padding: 12px;
+  font-size: 1rem;
+  outline: none;
+  resize: none;
+}
+
+button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: none;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #ff512f, #f09819);
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.message-text {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.reply-hint {
+  margin-top: 10px;
+  text-align: right;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Ask Me Anything</div>
+    <div class="subtitle">Anonymous • Anime • Sport Energy</div><!-- Send Question Card -->
+<div class="card">
+  <textarea id="questionInput" placeholder="Send an anonymous question..."></textarea>
+  <button onclick="sendMessage()">Send Message</button>
+</div>
+
+<!-- Open Message Card -->
+<div class="card" id="messageCard" style="display:none;">
+  <div class="message-text" id="messageText"></div>
+  <div class="reply-hint">Reply on WhatsApp Status 📸🔥</div>
+</div>
+
+<div class="hint">Screenshot the card and post your response on WhatsApp</div>
+
+  </div>  <script>
+    const ADMIN_KEY = "admin123"; // change this
+
+    function sendMessage() {
+      const input = document.getElementById('questionInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+      messages.push({ text: message, time: new Date().toLocaleString() });
+      localStorage.setItem('messages', JSON.stringify(messages));
+
+      input.value = '';
+      alert('Message sent anonymously!');
+    }
+
+    // ADMIN VIEW
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === ADMIN_KEY) {
+      document.getElementById('messageCard').style.display = 'block';
+      const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+      const box = document.getElementById('messageText');
+      if (messages.length === 0) {
+        box.innerText = 'No messages yet.';
+      } else {
+        box.innerHTML = messages.map(m => `🃏 ${m.text}<br><small>${m.time}</small>`).join('<hr>');
+      }
+    }
+  </script></body>
+</html>
