@@ -1,0 +1,16 @@
+{
+  "name": "anonymous-qna",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "crypto": "^1.0.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.8.0",
+    "helmet": "^7.0.0",
+    "dotenv": "^16.0.0"
+  }
+}
