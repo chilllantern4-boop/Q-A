@@ -1,178 +1,79 @@
-<!DOCTYPE html><html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anime Sport Q&A</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anonymous Q&A</title>
   <style>
-    * { box-sizing: border-box; }body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(135deg, #0a0f2c, #1b2a4e, #ff2f92);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-}
-
-.container {
-  width: 100%;
-  max-width: 420px;
-  padding: 16px;
-}
-
-.title {
-  text-align: center;
-  font-size: 1.7rem;
-  font-weight: bold;
-}
-
-.subtitle {
-  text-align: center;
-  font-size: 0.9rem;
-  opacity: 0.8;
-  margin-bottom: 16px;
-}
-
-.card {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(12px);
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
-  margin-bottom: 14px;
-  animation: pop 0.3s ease;
-}
-
-@keyframes pop {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-textarea {
-  width: 100%;
-  min-height: 90px;
-  border-radius: 14px;
-  border: none;
-  padding: 12px;
-  font-size: 1rem;
-  outline: none;
-  resize: none;
-}
-
-button {
-  width: 100%;
-  margin-top: 12px;
-  padding: 12px;
-  border: none;
-  border-radius: 16px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background: linear-gradient(135deg, #ff512f, #f09819);
-  cursor: pointer;
-}
-
-.message-item {
-  padding: 10px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.15);
-  margin-bottom: 8px;
-  cursor: pointer;
-}
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-.modal-card {
-  background: rgba(20,20,40,0.95);
-  border-radius: 18px;
-  padding: 20px;
-  max-width: 420px;
-  width: 100%;
-}
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #ff2f92;
-  padding: 10px 16px;
-  border-radius: 14px;
-  display: none;
-  font-size: 0.9rem;
-}
-
+    /* Simple mobile-friendly styling */
+    body { font-family: system-ui, -apple-system, Roboto, "Segoe UI", Arial; margin:0; padding:16px; background:#f7f7fb; color:#0b0b12; }
+    .card { max-width:720px; margin: 0 auto; background:#fff; padding:16px; border-radius:12px; box-shadow: 0 6px 18px rgba(20,20,40,0.06); }
+    h1 { font-size:20px; margin:0 0 8px 0; }
+    label { display:block; margin-top:12px; font-size:14px; }
+    textarea { width:100%; min-height:120px; padding:10px; border-radius:8px; border:1px solid #e6e6ee; font-size:15px; resize:vertical; }
+    input[type="text"]{ width:100%; padding:10px; border-radius:8px; border:1px solid #e6e6ee; font-size:15px; }
+    button { margin-top:12px; width:100%; padding:12px; border-radius:10px; border:0; font-weight:600; font-size:16px; cursor:pointer; background:#0b78ff; color:#fff; }
+    .muted { font-size:13px; color:#666; margin-top:8px; }
+    .success { padding:12px; background:#e6f8ed; color:#0b7b3a; border-radius:8px; margin-top:12px; }
+    .error { padding:12px; background:#fdecea; color:#7f1d1d; border-radius:8px; margin-top:12px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="title">Ask Me Anything</div>
-    <div class="subtitle">Anonymous • Anime • Sport Energy</div><!-- Send Question Card -->
-<div class="card">
-  <textarea id="questionInput" placeholder="Send an anonymous question..."></textarea>
-  <button onclick="sendMessage()">Send Message</button>
-</div>
+  <div class="card">
+    <h1>Send an anonymous message</h1>
+    <div class="muted">No phone number or email required. Your message is private and encrypted on the server.</div>
 
-<!-- Open Message Card -->
-<div class="card" id="messageCard" style="display:none;">
-  <div class="message-text" id="messageText"></div>
-  <div class="reply-hint">Reply on WhatsApp Status 📸🔥</div>
-</div>
+    <label for="name">Nickname (optional)</label>
+    <input id="name" type="text" maxlength="40" placeholder="e.g. Curious Friend"/>
 
-<div class="hint">Screenshot the card and post your response on WhatsApp</div>
+    <label for="message">Message</label>
+    <textarea id="message" maxlength="1000" placeholder="Write something..."></textarea>
 
-  </div>  <script>
-    const ADMIN_KEY = "admin123"; // change this
+    <button id="send">Send anonymously</button>
 
-    function showToast(text) {
-      const toast = document.getElementById('toast');
-      toast.innerText = text;
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 2500);
-    }
+    <div id="feedback" aria-live="polite"></div>
 
-    function sendMessage() {
-      const input = document.getElementById('questionInput');
-      const message = input.value.trim();
-      if (!message) return;
+    <div class="muted" style="margin-top:14px;">
+      Tip: keep messages respectful. Abuse may be rate-limited.
+    </div>
+  </div>
 
-      const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-      messages.push({ text: message, time: new Date().toLocaleString() });
-      localStorage.setItem('messages', JSON.stringify(messages));
+  <script>
+    const sendBtn = document.getElementById('send');
+    const feedback = document.getElementById('feedback');
 
-      input.value = '';
-      showToast('Message sent anonymously ⚡');
-    }
-
-    function openModal(text) {
-      document.getElementById('modalText').innerText = text;
-      document.getElementById('modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === ADMIN_KEY) {
-      const list = document.getElementById('adminList');
-      const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-      if (messages.length === 0) {
-        list.innerHTML = '<div class="card">No messages yet.</div>';
-      } else {
-        list.innerHTML = messages.map(m => 
-          `<div class="message-item" onclick="openModal('${m.text.replace(/'/g, "\'")}')">🃏 ${m.text.slice(0,40)}...</div>`
-        ).join('');
+    sendBtn.addEventListener('click', async () => {
+      feedback.textContent = '';
+      const name = document.getElementById('name').value.trim();
+      const message = document.getElementById('message').value.trim();
+      if (!message) {
+        feedback.innerHTML = '<div class="error">Please enter a message.</div>';
+        return;
       }
-    }
-  </script></body>
-  </html>
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sending…';
+
+      try {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, message })
+        });
+        const json = await res.json();
+        if (json.ok) {
+          feedback.innerHTML = '<div class="success">Message sent — thanks! (totally anonymous)</div>';
+          document.getElementById('message').value = '';
+          document.getElementById('name').value = '';
+        } else {
+          feedback.innerHTML = '<div class="error">' + (json.error || 'Failed to send') + '</div>';
+        }
+      } catch (err) {
+        feedback.innerHTML = '<div class="error">Network error. Try again later.</div>';
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send anonymously';
+      }
+    });
+  </script>
+</body>
+</html>
